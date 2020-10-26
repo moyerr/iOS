@@ -94,6 +94,8 @@ class MainViewController: UIViewController {
     weak var tabSwitcherController: TabSwitcherViewController?
     let tabSwitcherButton = TabSwitcherButton()
     let gestureBookmarksButton = GestureToolbarButton()
+    let gestureBackButton = GestureToolbarButton()
+    let gestureForwardButton = GestureToolbarButton()
 
     fileprivate lazy var tabSwitcherTransition = TabSwitcherTransitionDelegate()
     var currentTab: TabViewController? {
@@ -119,6 +121,7 @@ class MainViewController: UIViewController {
         chromeManager.delegate = self
         initTabButton()
         initBookmarksButton()
+        initBackAndForwardButtons()
         configureTabManager()
         loadInitialView()
         previewsSource.prepare()
@@ -254,13 +257,37 @@ class MainViewController: UIViewController {
         bookmarksButton.isAccessibilityElement = true
         bookmarksButton.accessibilityTraits = .button
     }
+
+    private func initBackAndForwardButtons() {
+        omniBar.backButton.addGestureRecognizer(
+            UILongPressGestureRecognizer(target: self, action: #selector(backLongPress))
+        )
+
+        omniBar.forwardButton.addGestureRecognizer(
+            UILongPressGestureRecognizer(target: self, action: #selector(forwardLongPress))
+        )
+
+        gestureBackButton.delegate = self
+        gestureBackButton.image = UIImage(named: "BrowsePrevious")
+
+        gestureForwardButton.delegate = self
+        gestureForwardButton.image = UIImage(named: "BrowseNext")
+
+        backButton.customView = gestureBackButton
+        backButton.isAccessibilityElement = true
+        backButton.accessibilityTraits = .button
+
+        forwardButton.customView = gestureForwardButton
+        forwardButton.isAccessibilityElement = true
+        forwardButton.accessibilityTraits = .button
+    }
     
     @objc func quickSaveBookmarkLongPress(gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             quickSaveBookmark()
         }
     }
-    
+
     @objc func quickSaveBookmark() {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         guard currentTab != nil else {
@@ -271,6 +298,24 @@ class MainViewController: UIViewController {
         Pixel.fire(pixel: .tabBarBookmarksLongPressed)
         
         currentTab!.saveAsBookmark(favorite: true)
+    }
+
+    @objc func backLongPress(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        presentBackNavigationItems()
+    }
+
+    @objc func forwardLongPress(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        presentForwardNavigationItems()
+    }
+
+    private func presentBackNavigationItems() {
+        print("**** Back long press")
+    }
+
+    private func presentForwardNavigationItems() {
+        print("**** Forward long press")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -595,8 +640,14 @@ class MainViewController: UIViewController {
     }
 
     fileprivate func refreshBackForwardButtons() {
-        backButton.isEnabled = currentTab?.canGoBack ?? false
-        forwardButton.isEnabled = currentTab?.canGoForward ?? false
+        let canGoBack = currentTab?.canGoBack ?? false
+        let canGoForward = currentTab?.canGoForward ?? false
+
+        backButton.isEnabled = canGoBack
+        forwardButton.isEnabled = canGoForward
+
+        gestureBackButton.isEnabled = canGoBack
+        gestureForwardButton.isEnabled = canGoForward
         
         omniBar.backButton.isEnabled = backButton.isEnabled
         omniBar.forwardButton.isEnabled = forwardButton.isEnabled
@@ -1288,12 +1339,30 @@ extension MainViewController: TabSwitcherButtonDelegate {
 extension MainViewController: GestureToolbarButtonDelegate {
     
     func singleTapDetected(in sender: GestureToolbarButton) {
-        Pixel.fire(pixel: .tabBarBookmarksPressed)
-        onBookmarksPressed()
+        switch sender {
+        case gestureBookmarksButton:
+            Pixel.fire(pixel: .tabBarBookmarksPressed)
+            onBookmarksPressed()
+        case gestureBackButton:
+            onBackPressed()
+        case gestureForwardButton:
+            onForwardPressed()
+        default:
+            break
+        }
     }
     
     func longPressDetected(in sender: GestureToolbarButton) {
-        quickSaveBookmark()
+        switch sender {
+        case gestureBookmarksButton:
+            quickSaveBookmark()
+        case gestureBackButton:
+            presentBackNavigationItems()
+        case gestureForwardButton:
+            presentForwardNavigationItems()
+        default:
+            break
+        }
     }
     
 }

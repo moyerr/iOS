@@ -33,6 +33,7 @@ class GestureToolbarButton: UIView {
         static let minLongPressDuration = 0.4
         static let maxTouchDeviationPoints = 20.0
         static let animationDuration = 0.3
+        static let disabledOrHighlightedAlpha: CGFloat = 0.2
     }
     
     // UIToolBarButton size would be 29X44 and its imageview size would be 24X24
@@ -55,7 +56,15 @@ class GestureToolbarButton: UIView {
             iconImageView.image = image
         }
     }
-    
+
+    var isEnabled: Bool = true {
+        didSet {
+            isUserInteractionEnabled = isEnabled
+            gestureRecognizers?.forEach { $0.isEnabled = isEnabled }
+            iconImageView.alpha = isEnabled ? 1.0 : Constants.disabledOrHighlightedAlpha
+        }
+    }
+
     let pointerView: UIView = UIView(frame: CGRect(x: 0,
                                                    y: 0,
                                                    width: ToolbarButtonConstants.pointerViewWidth,
@@ -113,7 +122,7 @@ class GestureToolbarButton: UIView {
     
     fileprivate func imposePressAnimation() {
         UIView.animate(withDuration: Constants.animationDuration) {
-            self.iconImageView.alpha = 0.2
+            self.iconImageView.alpha = Constants.disabledOrHighlightedAlpha
         }
     }
     
@@ -150,6 +159,7 @@ extension GestureToolbarButton: Themable {
 extension GestureToolbarButton: UIPointerInteractionDelegate {
     
     func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
+        guard isEnabled else { return nil }
         return .init(effect: .highlight(.init(view: pointerView)))
     }
     
