@@ -311,33 +311,77 @@ class MainViewController: UIViewController {
     }
 
     private func presentBackNavigationItems() {
-        guard
-            let backList = currentTab?.backList, !backList.isEmpty,
-            let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
-                .instantiateInitialViewController() as? UINavigationController,
-            let backForwardViewController = navigationController.viewControllers
-                .first as? BackForwardViewController
-        else { return }
+        guard let backList = currentTab?.backList, !backList.isEmpty else { return }
+
+        let backForwardViewController: BackForwardViewController
+        let viewControllerToPresent: UIViewController
+
+        if AppWidthObserver.shared.isPad {
+            guard let vc = UIStoryboard(name: "BackForward", bundle: .main)
+                    .instantiateViewController(withIdentifier: "BackForward") as? BackForwardViewController
+            else { return }
+
+            vc.modalPresentationStyle = .popover
+            vc.popoverPresentationController?.sourceView = omniBar.backButton
+            let buttonRect = omniBar.backButton.bounds
+            vc.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
+            vc.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+
+            backForwardViewController = vc
+            viewControllerToPresent = vc
+        } else {
+            guard
+                let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
+                    .instantiateInitialViewController() as? UINavigationController,
+                let vc = navigationController.viewControllers
+                    .first as? BackForwardViewController
+            else { return }
+
+            backForwardViewController = vc
+            viewControllerToPresent = navigationController
+        }
 
         backForwardViewController.dataSource = BackForwardDataSource(direction: .back, items: backList)
         backForwardViewController.delegate = self
 
-        present(navigationController, animated: true)
+        present(viewControllerToPresent, animated: true)
     }
 
     private func presentForwardNavigationItems() {
-        guard
-            let forwardList = currentTab?.forwardList, !forwardList.isEmpty,
-            let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
-                .instantiateInitialViewController() as? UINavigationController,
-            let backForwardViewController = navigationController.viewControllers
-                .first as? BackForwardViewController
-        else { return }
+        guard let forwardList = currentTab?.forwardList, !forwardList.isEmpty else { return }
+
+        let backForwardViewController: BackForwardViewController
+        let viewControllerToPresent: UIViewController
+
+        if AppWidthObserver.shared.isPad {
+            guard let vc = UIStoryboard(name: "BackForward", bundle: .main)
+                    .instantiateViewController(withIdentifier: "BackForward") as? BackForwardViewController
+            else { return }
+
+            vc.modalPresentationStyle = .popover
+            vc.popoverPresentationController?.sourceView = omniBar.forwardButton
+            let buttonRect = omniBar.forwardButton.bounds
+            vc.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
+            vc.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+
+            backForwardViewController = vc
+            viewControllerToPresent = vc
+        } else {
+            guard
+                let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
+                    .instantiateInitialViewController() as? UINavigationController,
+                let vc = navigationController.viewControllers
+                    .first as? BackForwardViewController
+            else { return }
+
+            backForwardViewController = vc
+            viewControllerToPresent = navigationController
+        }
 
         backForwardViewController.dataSource = BackForwardDataSource(direction: .forward, items: forwardList)
         backForwardViewController.delegate = self
 
-        present(navigationController, animated: true)
+        present(viewControllerToPresent, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
