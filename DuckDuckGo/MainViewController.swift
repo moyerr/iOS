@@ -377,22 +377,7 @@ class MainViewController: UIViewController {
     private func presentBackNavigationItems() {
         guard let backList = currentTab?.backList, !backList.isEmpty else { return }
 
-        guard let backForwardViewController = UIStoryboard(name: "BackForward", bundle: .main)
-                .instantiateInitialViewController() as? BackForwardViewController
-        else { return }
-
-        let buttonRect = omniBar.backButton.bounds
-
-        backForwardViewController.modalPresentationStyle = .popover
-        backForwardViewController.popoverPresentationController?.sourceView = omniBar.backButton
-        backForwardViewController.popoverPresentationController?.sourceRect =
-            CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
-        backForwardViewController.popoverPresentationController?.permittedArrowDirections = [.up]
-        backForwardViewController.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
-        backForwardViewController.presentationController?.delegate = self
-
-        backForwardViewController.dataSource = BackForwardDataSource(direction: .back, items: backList)
-        backForwardViewController.delegate = self
+        let backForwardViewController = prepareBackForwardViewController(withList: backList, attachedToView: omniBar.backButton)
 
         present(backForwardViewController, animated: true)
     }
@@ -401,24 +386,33 @@ class MainViewController: UIViewController {
     private func presentForwardNavigationItems() {
         guard let forwardList = currentTab?.forwardList, !forwardList.isEmpty else { return }
 
-        guard let backForwardViewController = UIStoryboard(name: "BackForward", bundle: .main)
-                .instantiateViewController(withIdentifier: "BackForward") as? BackForwardViewController
-        else { return }
+        let backForwardViewController = prepareBackForwardViewController(withList: forwardList, attachedToView: omniBar.forwardButton)
 
-        let buttonRect = omniBar.forwardButton.bounds
+        present(backForwardViewController, animated: true)
+    }
+
+    private func prepareBackForwardViewController(withList list: [WKBackForwardListItem], attachedToView view: UIView) -> BackForwardViewController {
+        guard let backForwardViewController = UIStoryboard(name: "BackForward", bundle: .main)
+                .instantiateInitialViewController() as? BackForwardViewController
+        else {
+            fatalError("Could not construct BackForwardViewController from storyboard")
+        }
 
         backForwardViewController.modalPresentationStyle = .popover
-        backForwardViewController.popoverPresentationController?.sourceView = omniBar.forwardButton
-        backForwardViewController.popoverPresentationController?.sourceRect =
-            CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
+        backForwardViewController.popoverPresentationController?.sourceView = view
+        backForwardViewController.popoverPresentationController?.sourceRect = CGRect(
+            origin: CGPoint(x: view.bounds.midX, y: view.bounds.maxY), // Bottom middle of the button
+            size: .zero
+        )
+
         backForwardViewController.popoverPresentationController?.permittedArrowDirections = [.up]
         backForwardViewController.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
         backForwardViewController.presentationController?.delegate = self
 
-        backForwardViewController.dataSource = BackForwardDataSource(direction: .forward, items: forwardList)
+        backForwardViewController.dataSource = BackForwardDataSource(items: list)
         backForwardViewController.delegate = self
 
-        present(backForwardViewController, animated: true)
+        return backForwardViewController
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

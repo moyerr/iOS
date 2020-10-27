@@ -23,15 +23,9 @@ import WebKit
 
 class BackForwardDataSource: NSObject, UITableViewDataSource {
 
-    enum NavigationDirection {
-        case back, forward
-    }
-
-    let direction: NavigationDirection
     private let items: [WKBackForwardListItem]
 
-    init(direction: NavigationDirection, items: [WKBackForwardListItem]) {
-        self.direction = direction
+    init(items: [WKBackForwardListItem]) {
         self.items = items
     }
 
