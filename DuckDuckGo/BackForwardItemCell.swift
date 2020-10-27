@@ -42,5 +42,6 @@ class BackForwardItemCell: UITableViewCell {
         return link?.url.absoluteString
             .dropPrefix(prefix: "\(scheme)://")
             .dropPrefix(prefix: "www.")
+            .removingPercentEncoding
     }
 }
