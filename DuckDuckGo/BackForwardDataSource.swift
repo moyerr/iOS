@@ -56,6 +56,7 @@ class BackForwardDataSource: NSObject, UITableViewDataSource {
         let theme = ThemeManager.shared.currentTheme
         cell.backgroundColor = theme.tableCellBackgroundColor
         cell.title?.textColor = theme.tableCellTextColor
+        cell.url.textColor = theme.tableCellAccessoryTextColor
         cell.setHighlightedStateBackgroundColor(theme.tableCellHighlightedBackgroundColor)
 
         return cell

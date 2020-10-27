@@ -380,16 +380,10 @@ class MainViewController: UIViewController {
         let backForwardViewController: BackForwardViewController
         let viewControllerToPresent: UIViewController
 
-        if AppWidthObserver.shared.isPad {
+        if AppWidthObserver.shared.isLargeWidth {
             guard let vc = UIStoryboard(name: "BackForward", bundle: .main)
                     .instantiateViewController(withIdentifier: "BackForward") as? BackForwardViewController
             else { return }
-
-            vc.modalPresentationStyle = .popover
-            vc.popoverPresentationController?.sourceView = omniBar.backButton
-            let buttonRect = omniBar.backButton.bounds
-            vc.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
-            vc.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
 
             backForwardViewController = vc
             viewControllerToPresent = vc
@@ -404,6 +398,16 @@ class MainViewController: UIViewController {
             backForwardViewController = vc
             viewControllerToPresent = navigationController
         }
+
+        let buttonRect = omniBar.backButton.bounds
+
+        viewControllerToPresent.modalPresentationStyle = .popover
+        viewControllerToPresent.popoverPresentationController?.sourceView = omniBar.backButton
+        viewControllerToPresent.popoverPresentationController?.sourceRect =
+            CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
+        viewControllerToPresent.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        viewControllerToPresent.popoverPresentationController?.permittedArrowDirections = [.up]
+        viewControllerToPresent.presentationController?.delegate = self
 
         backForwardViewController.dataSource = BackForwardDataSource(direction: .back, items: backList)
         backForwardViewController.delegate = self
@@ -418,16 +422,10 @@ class MainViewController: UIViewController {
         let backForwardViewController: BackForwardViewController
         let viewControllerToPresent: UIViewController
 
-        if AppWidthObserver.shared.isPad {
+        if AppWidthObserver.shared.isLargeWidth {
             guard let vc = UIStoryboard(name: "BackForward", bundle: .main)
                     .instantiateViewController(withIdentifier: "BackForward") as? BackForwardViewController
             else { return }
-
-            vc.modalPresentationStyle = .popover
-            vc.popoverPresentationController?.sourceView = omniBar.forwardButton
-            let buttonRect = omniBar.forwardButton.bounds
-            vc.popoverPresentationController?.sourceRect = CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
-            vc.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
 
             backForwardViewController = vc
             viewControllerToPresent = vc
@@ -442,6 +440,16 @@ class MainViewController: UIViewController {
             backForwardViewController = vc
             viewControllerToPresent = navigationController
         }
+
+        let buttonRect = omniBar.forwardButton.bounds
+
+        viewControllerToPresent.modalPresentationStyle = .popover
+        viewControllerToPresent.popoverPresentationController?.sourceView = omniBar.forwardButton
+        viewControllerToPresent.popoverPresentationController?.sourceRect =
+            CGRect(origin: CGPoint(x: buttonRect.midX, y: buttonRect.maxY), size: .zero)
+        viewControllerToPresent.popoverPresentationController?.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        viewControllerToPresent.popoverPresentationController?.permittedArrowDirections = [.up]
+        viewControllerToPresent.presentationController?.delegate = self
 
         backForwardViewController.dataSource = BackForwardDataSource(direction: .forward, items: forwardList)
         backForwardViewController.delegate = self
@@ -1649,6 +1657,20 @@ extension MainViewController: UIDropInteractionDelegate {
             
         }
         
+    }
+}
+
+extension MainViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationController(
+        _ controller: UIPresentationController,
+        viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle
+    ) -> UIViewController? {
+        // If we're coming out of a popover, we want to put the viewController in a navigationController
+        if let backForwardViewController = controller.presentedViewController as? BackForwardViewController {
+            let navigationController = ThemableNavigationController(rootViewController: backForwardViewController)
+            return navigationController
+        }
+        return nil
     }
 }
 

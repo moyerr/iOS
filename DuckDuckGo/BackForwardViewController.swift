@@ -59,6 +59,7 @@ extension BackForwardViewController: Themable {
 
         tableView.separatorColor = theme.tableCellSeparatorColor
         tableView.backgroundColor = theme.backgroundColor
+        popoverPresentationController?.backgroundColor = theme.backgroundColor
 
         tableView.reloadData()
     }
