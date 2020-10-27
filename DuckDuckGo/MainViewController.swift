@@ -311,11 +311,33 @@ class MainViewController: UIViewController {
     }
 
     private func presentBackNavigationItems() {
-        print("**** Back long press")
+        guard
+            let backList = currentTab?.backList, !backList.isEmpty,
+            let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
+                .instantiateInitialViewController() as? UINavigationController,
+            let backForwardViewController = navigationController.viewControllers
+                .first as? BackForwardViewController
+        else { return }
+
+        backForwardViewController.dataSource = BackForwardDataSource(direction: .back, items: backList)
+        backForwardViewController.delegate = self
+
+        present(navigationController, animated: true)
     }
 
     private func presentForwardNavigationItems() {
-        print("**** Forward long press")
+        guard
+            let forwardList = currentTab?.forwardList, !forwardList.isEmpty,
+            let navigationController = UIStoryboard(name: "BackForward", bundle: .main)
+                .instantiateInitialViewController() as? UINavigationController,
+            let backForwardViewController = navigationController.viewControllers
+                .first as? BackForwardViewController
+        else { return }
+
+        backForwardViewController.dataSource = BackForwardDataSource(direction: .forward, items: forwardList)
+        backForwardViewController.delegate = self
+
+        present(navigationController, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -1308,6 +1330,18 @@ extension MainViewController: BookmarksDelegate {
             removeHomeScreen()
             attachHomeScreen()
         }
+    }
+}
+
+extension MainViewController: BackForwardDelegate {
+    func backForwardViewController(
+        _ viewController: BackForwardViewController,
+        didSelectListItem listItem: WKBackForwardListItem
+    ) {
+        dismissOmniBar()
+        customNavigationBar.alpha = 1
+        allowContentUnderflow = false
+        currentTab?.webView.go(to: listItem)
     }
 }
 

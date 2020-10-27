@@ -25,6 +25,11 @@
 		4B0295192537BC6700E00CEF /* ConfigurationDebugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0295182537BC6700E00CEF /* ConfigurationDebugViewController.swift */; };
 		4B60AC97252EC07B00E8D219 /* fullscreenvideo.js in Resources */ = {isa = PBXBuildFile; fileRef = 4B60AC96252EC07B00E8D219 /* fullscreenvideo.js */; };
 		4B60ACA1252EC0B100E8D219 /* FullScreenVideoUserScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B60ACA0252EC0B100E8D219 /* FullScreenVideoUserScript.swift */; };
+		4E06B60D25476D7900669AD9 /* BackForwardDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E06B60C25476D7900669AD9 /* BackForwardDataSource.swift */; };
+		4E06B6212547735E00669AD9 /* BackForwardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E06B6202547735E00669AD9 /* BackForwardViewController.swift */; };
+		4E06B62B2547763000669AD9 /* BackForwardItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E06B62A2547763000669AD9 /* BackForwardItemCell.swift */; };
+		4E06B6352547B85B00669AD9 /* BackForwardDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E06B6342547B85B00669AD9 /* BackForwardDelegate.swift */; };
+		4E06B63E2547BFFE00669AD9 /* BackForward.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E06B6402547BFFE00669AD9 /* BackForward.storyboard */; };
 		83004E802193BB8200DA013C /* WKNavigationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83004E7F2193BB8200DA013C /* WKNavigationExtension.swift */; };
 		83004E862193E5ED00DA013C /* TabViewControllerBrowsingMenuExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83004E852193E5ED00DA013C /* TabViewControllerBrowsingMenuExtension.swift */; };
 		83004E882193E8C700DA013C /* TabViewControllerLongPressMenuExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83004E872193E8C700DA013C /* TabViewControllerLongPressMenuExtension.swift */; };
@@ -710,6 +715,11 @@
 		4B0295182537BC6700E00CEF /* ConfigurationDebugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationDebugViewController.swift; sourceTree = "<group>"; };
 		4B60AC96252EC07B00E8D219 /* fullscreenvideo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fullscreenvideo.js; sourceTree = "<group>"; };
 		4B60ACA0252EC0B100E8D219 /* FullScreenVideoUserScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenVideoUserScript.swift; sourceTree = "<group>"; };
+		4E06B60C25476D7900669AD9 /* BackForwardDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackForwardDataSource.swift; sourceTree = "<group>"; };
+		4E06B6202547735E00669AD9 /* BackForwardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackForwardViewController.swift; sourceTree = "<group>"; };
+		4E06B62A2547763000669AD9 /* BackForwardItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackForwardItemCell.swift; sourceTree = "<group>"; };
+		4E06B6342547B85B00669AD9 /* BackForwardDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackForwardDelegate.swift; sourceTree = "<group>"; };
+		4E06B63F2547BFFE00669AD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BackForward.storyboard; sourceTree = "<group>"; };
 		6FB030C7234331B400A10DB9 /* Configuration.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Configuration.xcconfig; path = Configuration/Configuration.xcconfig; sourceTree = "<group>"; };
 		83004E7F2193BB8200DA013C /* WKNavigationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNavigationExtension.swift; sourceTree = "<group>"; };
 		83004E832193E14C00DA013C /* UIAlertControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIAlertControllerExtension.swift; path = ../Core/UIAlertControllerExtension.swift; sourceTree = "<group>"; };
@@ -2099,6 +2109,18 @@
 			name = ContentBlockerRules;
 			sourceTree = "<group>";
 		};
+		4E06B60B25476D3700669AD9 /* BackForward */ = {
+			isa = PBXGroup;
+			children = (
+				4E06B60C25476D7900669AD9 /* BackForwardDataSource.swift */,
+				4E06B6402547BFFE00669AD9 /* BackForward.storyboard */,
+				4E06B6202547735E00669AD9 /* BackForwardViewController.swift */,
+				4E06B62A2547763000669AD9 /* BackForwardItemCell.swift */,
+				4E06B6342547B85B00669AD9 /* BackForwardDelegate.swift */,
+			);
+			name = BackForward;
+			sourceTree = "<group>";
+		};
 		830FA79B1F8E81FB00FCE105 /* ContentBlocker */ = {
 			isa = PBXGroup;
 			children = (
@@ -2375,6 +2397,7 @@
 				F1C5ECF31E37812900C599A4 /* Application */,
 				9817C9C121EF58BA00884F65 /* AutoClear */,
 				F15D43211E70849A00BF2CDC /* Autocomplete */,
+				4E06B60B25476D3700669AD9 /* BackForward */,
 				F1668BCC1E798025008CBA04 /* Bookmarks */,
 				F143C2C51E4A08F300CFDE3A /* DuckDuckGo.entitlements */,
 				839F119520DBC489007CD8C2 /* Feedback */,
@@ -4219,6 +4242,7 @@
 				984147B124F0264300362052 /* Home.storyboard in Resources */,
 				984147C324F026C800362052 /* HomeRow.storyboard in Resources */,
 				AA4D6AF623DF0312007E8790 /* AppIconRed60x60@3x.png in Resources */,
+				4E06B63E2547BFFE00669AD9 /* BackForward.storyboard in Resources */,
 				AA4D6AE423DE4D33007E8790 /* AppIconGreen40x40@3x.png in Resources */,
 				AAF2E28323E0495E00962AF8 /* AppIconBlue83.5x83.5@2x.png in Resources */,
 				AA4D6AE223DE4D33007E8790 /* AppIconGreen40x40@2x.png in Resources */,
@@ -4501,6 +4525,7 @@
 				8C4838B5221C8F7F008A6739 /* GestureToolbarButton.swift in Sources */,
 				986C7FA92417ADE700A3557D /* ReportBrokenSiteViewController.swift in Sources */,
 				F4D9C4FA25117A0F00814B71 /* HomeMessagesStorage.swift in Sources */,
+				4E06B6212547735E00669AD9 /* BackForwardViewController.swift in Sources */,
 				AA3D854523D9942200788410 /* AppIconSettingsViewController.swift in Sources */,
 				8565A3411FC4F78D00239327 /* PrivacyProtectionErrorController.swift in Sources */,
 				85C297042476C1FD0063A335 /* DaxDialogsSettings.swift in Sources */,
@@ -4509,6 +4534,7 @@
 				F4B0B796252CB35700830156 /* OnboardingWidgetsDetailsViewController.swift in Sources */,
 				85058370219F424500ED4EDB /* SearchBarExtension.swift in Sources */,
 				986DA94A24884B18004A7E39 /* WebViewTransition.swift in Sources */,
+				4E06B6352547B85B00669AD9 /* BackForwardDelegate.swift in Sources */,
 				F114C55B1E66EB020018F95F /* NibLoading.swift in Sources */,
 				F103076D1E800F5C0059FEC7 /* EditBookmarkAlert.swift in Sources */,
 				982E5630222C3D5B008D861B /* FeedbackPickerViewController.swift in Sources */,
@@ -4519,6 +4545,7 @@
 				F13B4BD51F183B3600814661 /* TabsModelPersistenceExtension.swift in Sources */,
 				F1134EE21F4233A200B73467 /* UIViewToastExtension.swift in Sources */,
 				F4D9C4F72511711800814B71 /* HomeMessageModel.swift in Sources */,
+				4E06B60D25476D7900669AD9 /* BackForwardDataSource.swift in Sources */,
 				980891A52237D4F500313A70 /* FeedbackNavigator.swift in Sources */,
 				98DD03D025064FD20017FE36 /* PrivacyProtectionHeaderCell.swift in Sources */,
 				85058366219AE9EA00ED4EDB /* HomePageConfiguration.swift in Sources */,
@@ -4602,6 +4629,7 @@
 				85058369219F424500ED4EDB /* UIColorExtension.swift in Sources */,
 				85058368219C49E000ED4EDB /* HomeViewSectionRenderers.swift in Sources */,
 				85F1E9B01FB7BF3900A75AC1 /* NativeDisplayableCertificateBuilderDriver.swift in Sources */,
+				4E06B62B2547763000669AD9 /* BackForwardItemCell.swift in Sources */,
 				85BD869F1FAA0E1100252411 /* PrivacyProtectionInfoDisplaying.swift in Sources */,
 				9820EAF522613CD30089094D /* WebProgressWorker.swift in Sources */,
 				F1C4A70E1E57725800A6CA1B /* OmniBar.swift in Sources */,
@@ -4951,6 +4979,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		4E06B6402547BFFE00669AD9 /* BackForward.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E06B63F2547BFFE00669AD9 /* Base */,
+			);
+			name = BackForward.storyboard;
+			sourceTree = "<group>";
+		};
 		8349118C217F491200610F35 /* MainInterface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

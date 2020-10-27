@@ -122,7 +122,19 @@ class TabViewController: UIViewController {
         let webViewCanGoForward = webView.canGoForward
         return webViewCanGoForward && !isError
     }
-    
+
+    /// The list of visited links preceding the current item,
+    /// in order of most recently visited
+    public var backList: [WKBackForwardListItem] {
+        webView.backForwardList.backList.reversed()
+    }
+
+    /// The list of visited links following the current item,
+    /// in order of most recently visited
+    public var forwardList: [WKBackForwardListItem] {
+        webView.backForwardList.forwardList
+    }
+
     public var isError: Bool {
         return !error.isHidden
     }
