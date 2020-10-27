@@ -529,6 +529,12 @@
 /* Please preserve newline character */
 "launchscreenWelcomeMessage" = "Welcome to\nDuckDuckGo!";
 
+/* Back menu title */
+"menu.title.back" = "Back";
+
+/* Forward menu title */
+"menu.title.forward" = "Forward";
+
 /* Edit button */
 "navigation.title.edit" = "Edit";
 

@@ -169,6 +169,9 @@ public struct UserText {
     
     public static let sectionTitleBookmarks = NSLocalizedString("section.title.bookmarks", value: "Bookmarks", comment: "")
     public static let sectionTitleFavorites = NSLocalizedString("section.title.favorites", value: "Favorites", comment: "")
+
+    public static let menuTitleBack = NSLocalizedString("menu.title.back", value: "Back", comment: "Back menu title")
+    public static let menuTitleForward = NSLocalizedString("menu.title.forward", value: "Forward", comment: "Forward menu title")
     
     public static let favoriteMenuDelete = NSLocalizedString("favorite.menu.delete", value: "Delete", comment: "")
     public static let favoriteMenuEdit = NSLocalizedString("favorite.menu.edit", value: "Edit", comment: "")

@@ -94,7 +94,10 @@ class MainViewController: UIViewController {
     weak var tabSwitcherController: TabSwitcherViewController?
     let tabSwitcherButton = TabSwitcherButton()
     let gestureBookmarksButton = GestureToolbarButton()
+
+    @available(iOS, obsoleted: 14, message: "iOS 14 and above uses a UIMenu to present the back stack")
     let gestureBackButton = GestureToolbarButton()
+    @available(iOS, obsoleted: 14, message: "iOS 14 and above uses a UIMenu to present the forward stack")
     let gestureForwardButton = GestureToolbarButton()
 
     fileprivate lazy var tabSwitcherTransition = TabSwitcherTransitionDelegate()
@@ -259,6 +262,11 @@ class MainViewController: UIViewController {
     }
 
     private func initBackAndForwardButtons() {
+        if #available(iOS 14, *) {
+            updateBackForwardMenus()
+            return
+        }
+
         omniBar.backButton.addGestureRecognizer(
             UILongPressGestureRecognizer(target: self, action: #selector(backLongPress))
         )
@@ -280,6 +288,61 @@ class MainViewController: UIViewController {
         forwardButton.customView = gestureForwardButton
         forwardButton.isAccessibilityElement = true
         forwardButton.accessibilityTraits = .button
+    }
+
+    @available(iOS 14, *)
+    private func updateBackForwardMenus() {
+        let deferredBackMenu = UIDeferredMenuElement { [weak self] provideItems in
+            guard let list = self?.currentTab?.backList else {
+                provideItems([])
+                return
+            }
+
+            let actions = list.map { listItem -> UIAction in
+                let link = Link(title: listItem.title, url: listItem.url)
+                let action = UIAction(title: link.displayTitle ?? link.url.absoluteString) { _ in
+                    self?.navigate(to: listItem)
+                }
+
+                Favicons.shared.loadFavicon(forDomain: link.url.host, fromURL: link.url, intoCache: .tabs, fromCache: .tabs) { [weak action] image in
+                    action?.image = image
+                }
+
+                return action
+            }
+
+            provideItems(actions)
+        }
+
+        let deferredForwardMenu = UIDeferredMenuElement { [weak self] provideItems in
+            guard let list = self?.currentTab?.forwardList else {
+                provideItems([])
+                return
+            }
+
+            let actions = list.map { listItem -> UIAction in
+                let link = Link(title: listItem.title, url: listItem.url)
+                let action = UIAction(title: link.displayTitle ?? link.url.absoluteString) { _ in
+                    self?.navigate(to: listItem)
+                }
+
+                Favicons.shared.loadFavicon(forDomain: link.url.host, fromURL: link.url, intoCache: .tabs, fromCache: .tabs) { [weak action] image in
+                    action?.image = image
+                }
+
+                return action
+            }
+
+            provideItems(actions)
+        }
+
+        let backMenu = UIMenu(title: UserText.menuTitleBack, children: [deferredBackMenu])
+        let forwardMenu = UIMenu(title: UserText.menuTitleForward, children: [deferredForwardMenu])
+
+        backButton.menu = backMenu
+        forwardButton.menu = forwardMenu
+        omniBar.backButton.menu = backMenu
+        omniBar.forwardButton.menu = forwardMenu
     }
     
     @objc func quickSaveBookmarkLongPress(gesture: UILongPressGestureRecognizer) {
@@ -310,6 +373,7 @@ class MainViewController: UIViewController {
         presentForwardNavigationItems()
     }
 
+    @available(iOS, obsoleted: 14, message: "iOS 14 and above uses a UIMenu to present the back stack")
     private func presentBackNavigationItems() {
         guard let backList = currentTab?.backList, !backList.isEmpty else { return }
 
@@ -347,6 +411,7 @@ class MainViewController: UIViewController {
         present(viewControllerToPresent, animated: true)
     }
 
+    @available(iOS, obsoleted: 14, message: "iOS 14 and above uses a UIMenu to present the forward stack")
     private func presentForwardNavigationItems() {
         guard let forwardList = currentTab?.forwardList, !forwardList.isEmpty else { return }
 
@@ -622,6 +687,13 @@ class MainViewController: UIViewController {
         dismissOmniBar()
     }
 
+    private func navigate(to backForwardListItem: WKBackForwardListItem) {
+        dismissOmniBar()
+        customNavigationBar.alpha = 1
+        allowContentUnderflow = false
+        currentTab?.webView.go(to: backForwardListItem)
+    }
+
     private func addTab(url: URL?) {
         let tab = tabManager.add(url: url)
         dismissOmniBar()
@@ -676,6 +748,10 @@ class MainViewController: UIViewController {
         refreshTabIcon()
         refreshOmniBar()
         refreshBackForwardButtons()
+
+        if #available(iOS 14, *) {
+            updateBackForwardMenus()
+        }
     }
 
     private func refreshTabIcon() {
@@ -1382,10 +1458,7 @@ extension MainViewController: BackForwardDelegate {
         _ viewController: BackForwardViewController,
         didSelectListItem listItem: WKBackForwardListItem
     ) {
-        dismissOmniBar()
-        customNavigationBar.alpha = 1
-        allowContentUnderflow = false
-        currentTab?.webView.go(to: listItem)
+        navigate(to: listItem)
     }
 }
 
